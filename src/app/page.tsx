@@ -1,15 +1,13 @@
-"use client";
-
 import Link from "next/link";
-import { ErrorState, LoadingState, ScoreBadge, StatusChip, TempDot } from "@/components/ui";
-import { useApi } from "@/lib/use-api";
+import { ErrorState, ScoreBadge, StatusChip, TempDot } from "@/components/ui";
+import { loadApi } from "@/lib/load-api";
 import type { DashboardPayload } from "@/lib/types";
 
-export default function DashboardPage() {
-  const { data, error, loading, reload } = useApi<DashboardPayload>("/api/dashboard");
-
-  if (loading) return <LoadingState label="Loading command center…" />;
-  if (error || !data) return <ErrorState message={error ?? "No data"} onRetry={reload} />;
+export default async function DashboardPage() {
+  const { data, error } = await loadApi<DashboardPayload>("/api/dashboard");
+  if (error || !data) {
+    return <ErrorState message={error ?? "No data"} />;
+  }
 
   return (
     <div className="h-full overflow-y-auto p-6 space-y-6">
